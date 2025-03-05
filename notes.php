@@ -71,3 +71,103 @@ include('user/includes/dbconnection.php');
         } else {
             $pageno = 1;
         }
+         // Formula for pagination
+         $no_of_records_per_page =10;
+         $offset = ($pageno-1) * $no_of_records_per_page;
+        $ret = "SELECT ID FROM tblnotes";
+ $query1 = $dbh -> prepare($ret);
+ $query1->execute();
+ $results1=$query1->fetchAll(PDO::FETCH_OBJ);
+ $total_rows=$query1->rowCount();
+ $total_pages = ceil($total_rows / $no_of_records_per_page);             
+ $sql="SELECT tblnotes.*,tbluser.* from tblnotes join tbluser on tblnotes.UserID=tbluser.ID LIMIT $offset, $no_of_records_per_page";
+ $query = $dbh -> prepare($sql);
+ 
+ $query->execute();
+ $results=$query->fetchAll(PDO::FETCH_OBJ);
+ 
+ $cnt=1;
+ if($query->rowCount() > 0)
+ {
+ foreach($results as $row)
+ {               ?>
+                     <div class="col-lg-6">
+                         <div class="properties properties2 mb-30">
+                             <div class="properties__card">
+                                 <div class="properties__img overlay1">
+                                     <a href="#"><img src="assets/img/featured2.png" width="300" height="300" alt=""></a>
+                                 </div>
+                                 <div class="properties__caption">
+                                     <p><?php  echo htmlentities($row->Subject);?></p>
+                                     <h3><?php  echo htmlentities($row->NotesTitle);?> By (<?php  echo htmlentities($row->FullName);?>)</h3>
+                                     <p><?php  echo htmlentities($row->NotesDecription);?>.
+                                         
+                                     </p>
+                                     <div class="properties__footer d-flex justify-content-between align-items-center">
+                                         <div class="restaurant-name">
+                                           
+                                             
+                                         </div>
+                                        
+                                     </div>
+                                     <p><table border="1"><tr>
+   <th width="200"><strong>File 1</strong></th>
+   <td colspan="3" style="text-align: center;"><a href="user/folder1/<?php echo $row->File1;?>" width="100" height="100" target="_blank" class="btn bnt-primary">Download File</a></td>
+   
+   </tr>
+   <?php if($row->File2==""){ ?>
+     <tr>
+   <th width="200"><strong>File 2</strong></th>
+   <td colspan="3" style="text-align: center;"><strong style="color: red">File is not available</strong></td>
+   
+   </tr><?php } else{?>
+   <tr>
+   <th width="200"><strong>File 2</strong></th>
+   <td colspan="3" style="text-align: center;"><a href="user/folder2/<?php echo $row->File2;?>" width="100" height="100" target="_blank" class="btn bnt-primary">Download File</a></td>
+   
+   </tr> <?php } ?>
+   <?php if($row->File3==""){ ?>
+     <tr>
+   <th width="200"><strong>File 3</strong></th>
+   <td colspan="3" style="text-align: center;"><strong style="color: red">File is not available</strong></td>
+   
+   </tr><?php } else{?>
+   <tr>
+   <th width="200"><strong>File 3</strong></th>
+   <td colspan="3" style="text-align: center;"><a href="user/folder3/<?php echo $row->File3;?>" width="100" height="100" target="_blank" class="btn bnt-primary">Download File</a></td>
+   
+   </tr><?php } ?>
+   <?php if($row->File4==""){ ?>
+     <tr>
+   <th width="200"><strong>File 4</strong></th>
+   <td colspan="3" style="text-align: center;"><strong style="color: red">File is not available</strong></td>
+   
+   </tr><?php } else{?>
+   <tr>
+   <th width="200"><strong>File 4</strong></th>
+   <td colspan="3" style="text-align: center;"><a href="user/folder4/<?php echo $row->File4;?>" width="100" height="100" target="_blank" class="btn bnt-primary">Download File</a></td>
+   
+   </tr><?php } ?></p></table>
+                                 </div>
+                                 
+                             </div>
+                         </div>
+                     </div> 
+                    <?php $cnt=$cnt+1;}} ?>
+                     
+                  
+                 </div>
+               <div align="left">
+     <ul class="pagination" >
+         <li><a href="?pageno=1"><strong style="color:blue">First></strong></a></li>
+         <li class="<?php if($pageno <= 1){ echo 'disabled'; } ?>">
+             <a href="<?php if($pageno <= 1){ echo '#'; } else { echo "?pageno=".($pageno - 1); } ?>"><strong style="padding-left: 10px;color: blue;">Prev></strong></a>
+         </li>
+         <li class="<?php if($pageno >= $total_pages){ echo 'disabled'; } ?>">
+             <a href="<?php if($pageno >= $total_pages){ echo '#'; } else { echo "?pageno=".($pageno + 1); } ?>"><strong style="padding-left: 10px;color: blue;">Next></strong></a>
+         </li>
+         <li><a href="?pageno=<?php echo $total_pages; ?>"><strong style="padding-left: 10px;color: blue;">Last</strong></a></li>
+     </ul>
+ </div>
+             </div>
+         </div>
